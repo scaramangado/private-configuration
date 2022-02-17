@@ -1,2 +1,2 @@
-colorscheme dracula
+colorscheme darcula
 
