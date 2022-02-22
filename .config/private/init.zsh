@@ -1,5 +1,8 @@
 # Config repo
-alias private-config='git --git-dir=$HOME/.private-config-repo/ --work-tree=$HOME'
+private-config () {
+  git --git-dir=$HOME/.private-config-repo/ --work-tree=$HOME $@
+}
+
 
 open() {
 	xdg-open $@ > /dev/null 2>&1 &|
