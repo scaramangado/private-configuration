@@ -1,0 +1,10 @@
+#!/bin/sh
+
+read -sp "Enter password of remote user: " PASSWORD
+
+echo $PASSWORD | ssh -tt scara "(cd $HOME/infrastructure/server-infrastructure/nextcloud ; sudo docker compose down) && sudo chmod -R 750 $HOME/docker-volumes/nextcloud/" || exit 1
+
+(cd /media/backup ; time rsync -av --delete-during --stats scara:docker-volumes/nextcloud .) || exit 1
+
+echo $PASSWORD | ssh -tt scara "(cd $HOME/infrastructure/server-infrastructure/nextcloud ; sudo docker compose up -d) && sudo docker restart nginx" || exit 1
+
