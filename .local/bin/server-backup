@@ -2,9 +2,14 @@
 
 read -sp "Enter password of remote user: " PASSWORD
 
+echo ""
+echo "Barinade Backup"
+echo $PASSWORD | ssh -tt scara "sudo docker compose -f $HOME/projects/barinade-infrastructure/prod/docker-compose.yml down && sudo chmod -R 750 $HOME/docker-volumes/barinade-prod/" || exit 1
+(cm /media/backup ; time rsync -av --delete-during --stats scara:docker-volumes/barinade-prod/db/ barinade-db) || exit 1
+ssh scara "docker compose -f $HOME/projects/barinade-infrastructure/prod/docker-compose.yml up -d" || exit 1
+
+echo "Nextcloud Backup"
 echo $PASSWORD | ssh -tt scara "(cd $HOME/server-infrastructure/nextcloud ; sudo docker compose down) && sudo chmod -R 750 $HOME/docker-volumes/nextcloud/" || exit 1
-
 (cd /media/backup ; time rsync -av --delete-during --stats scara:docker-volumes/nextcloud .) || exit 1
-
 echo $PASSWORD | ssh -tt scara "(cd $HOME/server-infrastructure/nextcloud ; sudo docker compose up -d) && sudo docker restart nginx" || exit 1
 
