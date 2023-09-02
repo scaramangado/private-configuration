@@ -6,7 +6,7 @@ echo ""
 echo "Barinade Backup"
 ssh -tt scara "sudo docker compose -f $HOME/projects/barinade-infrastructure/prod/docker-compose.yml down && \
 	sudo chmod -R 750 $HOME/docker-volumes/barinade-prod/" <<< "$PASSWORD" || exit 1
-(cm /media/backup ; time rsync -av --delete-during --stats scara:docker-volumes/barinade-prod/db/ barinade-db) || exit 1
+(cd /media/backup ; time rsync -av --delete-during --stats scara:docker-volumes/barinade-prod/db/ barinade-db) || exit 1
 ssh scara "docker compose -f $HOME/projects/barinade-infrastructure/prod/docker-compose.yml up -d" || exit 1
 
 echo "Nextcloud Backup"
